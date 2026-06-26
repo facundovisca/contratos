@@ -3,10 +3,10 @@
     --bg-main: #0a0f1d;
     --card-bg: rgba(20, 27, 45, 0.45); /* Vidrio esmerilado translúcido real */
     --text-main: #f8fafc;
-    --text-muted: #94a3b8;     /* Más claro para mejorar el contraste en el fondo oscuro */
+    --text-muted: #94a3b8;     /* Gris plata con mejor contraste para lectura */
     --accent: #38bdf8;         /* Cian eléctrico */
     --accent-glow: rgba(56, 189, 248, 0.2);
-    --border-color: rgba(255, 255, 255, 0.07);
+    --border-color: rgba(255, 255, 255, 0.08);
 }
 
 * {
@@ -28,7 +28,7 @@ body {
     overflow-x: hidden;
 }
 
-/* --- Esferas de Luz Ambientales de Fondo (Para activar el efecto vidrio) --- */
+/* --- Esferas de Luz Ambientales de Fondo (Activan el efecto de vidrio) --- */
 body::before,
 body::after {
     content: "";
@@ -49,9 +49,9 @@ body::before {
 }
 
 body::after {
-    bottom: 10%,
+    bottom: 10%;
     right: -100px;
-    background: #ec4899; /* Un sutil destello magenta para romper la monotonía */
+    background: #ec4899; /* Destello magenta sutil para dar profundidad */
 }
 
 /* --- Header --- */
@@ -63,13 +63,12 @@ header {
 }
 
 header h1 {
-    font-family: 'Plus Jakarta Sans', sans-serif; /* Cambiamos a la tipografía limpia */
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 2.8rem;
     font-weight: 800;
-    letter-spacing: -1.2px; /* Juntamos un pelín las letras para un look más premium */
+    letter-spacing: -1.2px; /* Look compacto y refinado */
     margin-bottom: 16px;
     line-height: 1.2;
-    text-transform: none; /* Mantiene las mayúsculas normales */
     
     background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
     -webkit-background-clip: text;
@@ -79,16 +78,17 @@ header h1 {
 }
 
 header h2 {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     color: var(--text-muted);
-    font-weight: 400;
+    font-weight: 300;
     max-width: 600px;
-    margin: 0 auto;
-    letter-spacing: 0.3px;
+    margin: 14px auto 0 auto;
+    letter-spacing: 0.6px;
     line-height: 1.5;
+    font-style: italic;
 }
 
-/* --- Buscador Unificado --- */
+/* --- Buscador Premium --- */
 .contenedor-busqueda {
     margin-top: 40px;
     display: flex;
@@ -100,9 +100,9 @@ header h2 {
     max-width: 420px;
     padding: 16px 28px;
     font-size: 0.95rem;
-    background: rgba(10, 15, 29, 0.6);
+    background: rgba(30, 41, 59, 0.4); /* Despegado sutilmente del fondo oscuro */
     border: 1px solid var(--border-color);
-    border-radius: 16px; /* Geometría unificada con las tarjetas */
+    border-radius: 16px; /* Geometría suavizada alineada con las tarjetas */
     color: var(--text-main);
     outline: none;
     backdrop-filter: blur(10px);
@@ -119,7 +119,7 @@ header h2 {
 }
 
 #buscador::placeholder {
-    color: #475569;
+    color: #64748b; /* Contraste óptimo para lectura rápida */
 }
 
 /* --- Grid de Tarjetas --- */
@@ -134,37 +134,37 @@ header h2 {
     z-index: 10;
 }
 
-/* --- Tarjeta Individual Premium --- */
+/* --- Tarjeta Individual --- */
 .card-frase {
     background: var(--card-bg);
-    backdrop-filter: blur(20px); /* Aumentamos el desenfoque para un look más sedoso */
+    backdrop-filter: blur(20px); /* Look sedoso y translúcido */
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
-    border-radius: 20px; /* Esquinas sutilmente más pulidas */
-    padding: 45px 35px;
+    border-radius: 20px;
+    padding: 50px 30px 40px 30px; /* Más aire interno para equilibrar textos */
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Decoración: Comilla sutil integrada a la paleta */
+/* Decoración: Comilla elegante en marca de agua */
 .card-frase::before {
     content: "“";
     position: absolute;
     top: -10px;
     left: 25px;
     font-size: 7.5rem;
-    color: rgba(56, 189, 248, 0.05); /* Usamos el cian con muy baja opacidad */
+    color: rgba(56, 189, 248, 0.05); /* Vinculada a la paleta de acento */
     font-family: serif;
     pointer-events: none;
 }
 
-/* Hover Suave y Fluido */
+/* Hover Fluido Avanzado */
 .card-frase:hover {
     transform: translateY(-6px);
     border-color: rgba(56, 189, 248, 0.35);
@@ -188,13 +188,14 @@ header h2 {
     transform: scale(1.04);
 }
 
-/* --- Bloque de Texto --- */
+/* --- Cuerpo de la Frase --- */
 .frase {
     font-size: 1.3rem;
     font-style: italic;
     font-weight: 400;
     color: #f1f5f9;
-    margin-bottom: 22px;
+    margin-top: 10px; /* Separación sutil respecto a la foto */
+    margin-bottom: 24px;
     line-height: 1.6;
     letter-spacing: -0.2px;
     position: relative;
