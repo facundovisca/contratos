@@ -7,6 +7,7 @@ const contenedorFraseDia = document.getElementById('frase-del-dia-container');
 let todasLasFrases = [];
 let formularioActivo = false;
 
+// Lista oficial de autores con nombres completos y fotos correspondientes
 const autoresDisponibles = [
     { nombre: "Sol Belous", foto: "img/sol.png" },
     { nombre: "Daniel Casal", foto: "img/dani.png" },
@@ -18,13 +19,13 @@ const autoresDisponibles = [
     { nombre: "Bettina Cordero", foto: "img/beti.png" },
     { nombre: "Santino Mezzotero", foto: "img/santi.png" },
     { nombre: "Adriel Pérez de Barradas", foto: "img/adri.png" },
-    { nombre: "Natasha Miloslavich", foto: "img/nata.png" }, // <- ¡Corregido acá!
+    { nombre: "Natasha Miloslavich", foto: "img/nata.png" },
     { nombre: "Rosario Blanco", foto: "img/ro.png" },
     { nombre: "Gabriela Lopez", foto: "img/gaby.png" },
     { nombre: "Lucas Pereiro", foto: "img/lucas.png" }
 ];
 
-// Estilos dinámicos para los nuevos componentes interactivos y la tarjeta horizontal
+// Inyección de estilos dinámicos estrictamente necesarios para el Formulario Dinámico
 const estilosAdicionales = document.createElement('style');
 estilosAdicionales.innerHTML = `
     .btn-flotante-mas {
@@ -53,43 +54,6 @@ estilosAdicionales.innerHTML = `
         cursor: pointer; width: 100%; transition: transform 0.2s;
     }
     .btn-insertar:hover { transform: translateY(-2px); }
-
-    /* --- ESTILOS DE LA TARJETA DEL DÍA (HORIZONTAL) --- */
-    .card-del-dia {
-        max-width: 800px; margin: 0 auto 50px auto;
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
-        border: 2px solid rgba(56, 189, 248, 0.3);
-        border-radius: 24px; padding: 40px;
-        display: flex; align-items: center; gap: 40px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(56, 189, 248, 0.15);
-        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        position: relative; overflow: hidden;
-    }
-    .card-del-dia::before {
-        content: "FRASE DEL DIA"; position: absolute; top: 15px; right: 20px;
-        font-size: 0.75rem; font-weight: 800; color: var(--accent);
-        letter-spacing: 2px; background: rgba(56, 189, 248, 0.1);
-        padding: 4px 12px; border-radius: 50px;
-    }
-    .card-del-dia .foto-horizontal img {
-        width: 150px; height: 150px; border-radius: 20px;
-        object-fit: cover; border: 3px solid var(--accent);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    }
-    .card-del-dia .info-horizontal { flex: 1; text-align: left; }
-    .card-del-dia .frase-dia-texto {
-        font-size: 1.6rem; font-style: italic; font-weight: 500;
-        color: #ffffff; line-height: 1.5; margin-bottom: 15px;
-    }
-    .card-del-dia .autor-dia-texto {
-        font-size: 1.1rem; font-weight: 700; color: var(--accent);
-        text-transform: uppercase; letter-spacing: 1px;
-    }
-
-    @media (max-width: 680px) {
-        .card-del-dia { flex-direction: column; text-align: center; gap: 20px; padding: 30px; }
-        .card-del-dia .info-horizontal { text-align: center; }
-    }
 `;
 document.head.appendChild(estilosAdicionales);
 
@@ -119,7 +83,7 @@ async function cargarFrases() {
     }
 }
 
-// LÓGICA DE SELECCIÓN RANDOM DIARIA FIJA
+// LÓGICA DE SELECCIÓN RANDOM DIARIA FIJA (Matemática basada en fecha)
 function renderizarFraseDelDia() {
     if (!contenedorFraseDia || todasLasFrases.length === 0) return;
 
@@ -248,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 (item.autor && item.autor.toLowerCase().includes(texto)) || 
                 (item.frase && item.frase.toLowerCase().includes(texto))
             );
-            renderizarPantaria(filtradas);
+            renderizarPantalla(filtradas);
         });
     }
 
