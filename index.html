@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Frases célebres Área Contratos</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Tipografía moderna Inter -->
-<!-- Nuevas tipografías: Syne para títulos y Plus Jakarta Sans para el cuerpo -->
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet"></head>
+    <!-- Tipografías: Syne para títulos y Plus Jakarta Sans para el cuerpo -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+</head>
 <body>
 
-<header>
+    <header>
         <h1>Frases célebres Área Contratos</h1>
         <h2>Testimonios de un tiempo y verdades fundamentales para la humanidad</h2>
         
@@ -19,15 +19,18 @@
         </div>
     </header>
 
-    <!-- El contenedor donde JavaScript va a inyectar la tarjeta de Sol (y las próximas) -->
+    <!-- La grilla donde conviven el formulario dinámico y las frases -->
     <main class="grid-frases" id="contenedor-frases">
     </main>
+
+    <!-- Botón Flotante "+" Moderno -->
+    <button id="btn-toggle-form" class="btn-flotante-mas">+</button>
 
     <footer>
         <p>© 2026 - Área Contratos. Todos los derechos (y las prórrogas) reservados.</p>
     </footer>
 
-    <!-- El script que lee el archivo frases.json -->
+    <!-- El script va al final del body para asegurar la carga del DOM -->
     <script src="script.js"></script>
 </body>
 </html>
