@@ -1,11 +1,8 @@
 const contenedor = document.getElementById('contenedor-frases');
-const buscador = document.getElementById('buscador');
-const btnToggleForm = document.getElementById('btn-toggle-form');
-
 let todasLasFrases = [];
 let formularioActivo = false;
 
-// Lista oficial de autores con sus nombres completos y fotos correspondientes
+// Lista oficial de autores con nombres completos y fotos correspondientes
 const autoresDisponibles = [
     { nombre: "Sol Belous", foto: "img/sol.png" },
     { nombre: "Daniel Casal", foto: "img/dani.png" },
@@ -23,7 +20,7 @@ const autoresDisponibles = [
     { nombre: "Lucas Pereiro", foto: "img/lucas.png" }
 ];
 
-// Estilos dinámicos para los componentes interactivos
+// Inyección de estilos dinámicos de los componentes interactivos
 const estilosAdicionales = document.createElement('style');
 estilosAdicionales.innerHTML = `
     .btn-flotante-mas {
@@ -57,7 +54,7 @@ estilosAdicionales.innerHTML = `
 `;
 document.head.appendChild(estilosAdicionales);
 
-// Cargar datos iniciales
+// Cargar datos desde el JSON
 async function cargarFrases() {
     try {
         const respuesta = await fetch('frases.json');
@@ -65,20 +62,20 @@ async function cargarFrases() {
         renderizarPantalla();
     } catch (error) {
         console.error("Error al cargar las frases:", error);
-        contenedor.innerHTML = `<p style="color: red; text-align: center;">Error al cargar el libro.</p>`;
+        contenedor.innerHTML = `<p style="color: red; text-align: center;">Error al cargar el libro de frases.</p>`;
     }
 }
 
-// Renderizado general de la interfaz (Formulario inline + Frases)
+// Pintar la interfaz en la pantalla
 function renderizarPantalla(frasesAMostrar = todasLasFrases) {
+    if (!contenedor) return;
     contenedor.innerHTML = "";
 
-    // Si el panel de carga está activo, se inyecta la tarjeta-formulario al principio de la grilla
+    // Insertar la tarjeta formulario si está activa
     if (formularioActivo) {
         const tarjetaForm = document.createElement('article');
         tarjetaForm.classList.add('card-frase');
         
-        // Generamos el menú select dinámicamente con los nombres completos ordenados
         let opcionesSelect = autoresDisponibles.map(a => `<option value="${a.nombre}" data-foto="${a.foto}">${a.nombre}</option>`).join('');
 
         tarjetaForm.innerHTML = `
@@ -94,7 +91,7 @@ function renderizarPantalla(frasesAMostrar = todasLasFrases) {
         `;
         contenedor.appendChild(tarjetaForm);
 
-        // Evento para procesar el formulario cuando se envía
+        // Procesar la subida local
         tarjetaForm.querySelector('#form-inline').addEventListener('submit', (e) => {
             e.preventDefault();
             const texto = document.getElementById('ins-frase').value.trim();
@@ -106,14 +103,16 @@ function renderizarPantalla(frasesAMostrar = todasLasFrases) {
             
             todasLasFrases.push(nuevoObjeto);
             formularioActivo = false;
-            btnToggleForm.classList.remove('activo');
+            
+            const btnToggleForm = document.getElementById('btn-toggle-form');
+            if (btnToggleForm) btnToggleForm.classList.remove('activo');
             
             renderizarPantalla();
-            console.log("Copia esta estructura actualizada para tu frases.json:", JSON.stringify(todasLasFrases, null, 4));
+            console.log("Copia este bloque para tu frases.json:", JSON.stringify(todasLasFrases, null, 4));
         });
     }
 
-    // Dibujar las tarjetas vigentes en la pantalla
+    // Dibujar las frases normales
     frasesAMostrar.forEach(item => {
         const tarjeta = document.createElement('article');
         tarjeta.classList.add('card-frase');
@@ -130,20 +129,28 @@ function renderizarPantalla(frasesAMostrar = todasLasFrases) {
     });
 }
 
-// Evento del botón flotante para desplegar u ocultar la tarjeta de carga
-btnToggleForm.addEventListener('click', () => {
-    formularioActivo = !formularioActivo;
-    btnToggleForm.classList.toggle('activo');
-    renderizarPantalla();
-});
+// Protección total del DOM para evitar errores null en GitHub Pages
+document.addEventListener('DOMContentLoaded', () => {
+    const btnToggleForm = document.getElementById('btn-toggle-form');
+    const buscador = document.getElementById('buscador');
 
-// Filtro del buscador en tiempo real
-buscador.addEventListener('input', (e) => {
-    const texto = e.target.value.toLowerCase();
-    const filtradas = todasLasFrases.filter(item => 
-        item.autor.toLowerCase().includes(texto) || item.frase.toLowerCase().includes(texto)
-    );
-    renderizarPantalla(filtradas);
-});
+    if (btnToggleForm) {
+        btnToggleForm.addEventListener('click', () => {
+            formularioActivo = !formularioActivo;
+            btnToggleForm.classList.toggle('activo');
+            renderizarPantalla();
+        });
+    }
 
-cargarFrases();
+    if (buscador) {
+        buscador.addEventListener('input', (e) => {
+            const texto = e.target.value.toLowerCase();
+            const filtradas = todasLasFrases.filter(item => 
+                item.autor.toLowerCase().includes(texto) || item.frase.toLowerCase().includes(texto)
+            );
+            renderizarPantalla(filtradas);
+        });
+    }
+
+    cargarFrases();
+});
