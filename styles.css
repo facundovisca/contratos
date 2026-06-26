@@ -1,12 +1,12 @@
-/* --- Variables de Color (Paleta Premium Dark) --- */
+/* --- Variables de Color (Paleta Premium Dark Refinada) --- */
 :root {
-    --bg-gradient: radial-gradient(circle at 50% 0%, #1e2640 0%, #0f1423 70%);
-    --card-bg: rgba(30, 41, 59, 0.7); /* Semi-transparente para el efecto vidrio */
+    --bg-main: #0a0f1d;
+    --card-bg: rgba(20, 27, 45, 0.45); /* Vidrio esmerilado translúcido real */
     --text-main: #f8fafc;
-    --text-muted: #64748b;
+    --text-muted: #94a3b8;     /* Más claro para mejorar el contraste en el fondo oscuro */
     --accent: #38bdf8;         /* Cian eléctrico */
-    --accent-glow: rgba(56, 189, 248, 0.15);
-    --border-color: rgba(255, 255, 255, 0.06);
+    --accent-glow: rgba(56, 189, 248, 0.2);
+    --border-color: rgba(255, 255, 255, 0.07);
 }
 
 * {
@@ -16,70 +16,106 @@
 }
 
 body {
-    font-family: 'Plus Jakarta Sans', sans-serif; /* Tipografía base muy moderna y legible */
-    background: var(--bg-gradient);
-    background-attachment: fixed;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-main);
     color: var(--text-main);
     line-height: 1.6;
-    padding: 60px 20px;
+    padding: 80px 20px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* --- Esferas de Luz Ambientales de Fondo (Para activar el efecto vidrio) --- */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(130px);
+    opacity: 0.15;
+}
+
+body::before {
+    top: -50px;
+    left: -100px;
+    background: var(--accent);
+}
+
+body::after {
+    bottom: 10%,
+    right: -100px;
+    background: #ec4899; /* Un sutil destello magenta para romper la monotonía */
 }
 
 /* --- Header --- */
 header {
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 70px;
+    position: relative;
+    z-index: 10;
 }
 
 header h1 {
-    font-size: 3rem;
+    font-family: 'Plus Jakarta Sans', sans-serif; /* Cambiamos a la tipografía limpia */
+    font-size: 2.8rem;
     font-weight: 800;
-    color: var(--text-main);
-    letter-spacing: -1px;
-    margin-bottom: 12px;
-    background: linear-gradient(to right, #ffffff, #94a3b8);
+    letter-spacing: -1.2px; /* Juntamos un pelín las letras para un look más premium */
+    margin-bottom: 16px;
+    line-height: 1.2;
+    text-transform: none; /* Mantiene las mayúsculas normales */
+    
+    background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; /* Efecto degradado en el título */
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #ffffff;
 }
 
 header h2 {
-    font-size: 1.1rem;
-    color: #64748b; /* Gris sutil de la paleta */
-    font-weight: 300;
-    margin-top: 12px;
-    letter-spacing: 0.8px;
-    line-height: 1.4;
-    font-style: italic; /* Le da ese toque de cita o reflexión */
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    max-width: 600px;
+    margin: 0 auto;
+    letter-spacing: 0.3px;
+    line-height: 1.5;
 }
 
-/* --- Buscador --- */
+/* --- Buscador Unificado --- */
 .contenedor-busqueda {
-    margin-top: 35px;
+    margin-top: 40px;
     display: flex;
     justify-content: center;
 }
 
 #buscador {
     width: 100%;
-    max-width: 400px;
-    padding: 14px 24px;
+    max-width: 420px;
+    padding: 16px 28px;
     font-size: 0.95rem;
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50px;
+    background: rgba(10, 15, 29, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 16px; /* Geometría unificada con las tarjetas */
     color: var(--text-main);
     outline: none;
-    backdrop-filter: blur(8px); /* Desfoque de fondo */
-    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     text-align: center;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 }
 
 #buscador:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 20px var(--accent-glow);
-    max-width: 440px; /* Se expande sutilmente al clickearlo */
+    box-shadow: 0 0 25px var(--accent-glow);
+    max-width: 460px;
 }
 
 #buscador::placeholder {
@@ -91,88 +127,97 @@ header h2 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 35px;
-    max-width: 1100px;
+    max-width: 1140px;
     margin: 0 auto;
     width: 100%;
+    position: relative;
+    z-index: 10;
 }
 
-/* --- Tarjeta Individual (Efecto Vidrio) --- */
+/* --- Tarjeta Individual Premium --- */
 .card-frase {
     background: var(--card-bg);
-    backdrop-filter: blur(12px); /* Efecto esmerilado */
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(20px); /* Aumentamos el desenfoque para un look más sedoso */
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
-    border-radius: 24px;
-    padding: 40px 30px;
+    border-radius: 20px; /* Esquinas sutilmente más pulidas */
+    padding: 45px 35px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     position: relative;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Animación suave */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Decoración: Comilla gigante elegante de fondo */
+/* Decoración: Comilla sutil integrada a la paleta */
 .card-frase::before {
     content: "“";
     position: absolute;
-    top: -20px;
-    left: 20px;
-    font-size: 8rem;
-    color: rgba(255, 255, 255, 0.03);
+    top: -10px;
+    left: 25px;
+    font-size: 7.5rem;
+    color: rgba(56, 189, 248, 0.05); /* Usamos el cian con muy baja opacidad */
     font-family: serif;
     pointer-events: none;
 }
 
-/* Efecto Hover Avanzado */
+/* Hover Suave y Fluido */
 .card-frase:hover {
-    transform: translateY(-8px);
-    border-color: rgba(56, 189, 248, 0.4);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px var(--accent-glow);
+    transform: translateY(-6px);
+    border-color: rgba(56, 189, 248, 0.35);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px var(--accent-glow);
 }
 
 /* --- Foto de Perfil --- */
 .foto-perfil img {
-    width: 140px;
-    height: 140px;
+    width: 135px;
+    height: 135px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid rgba(255, 255, 255, 0.08);
+    border: 4px solid rgba(255, 255, 255, 0.05);
     margin-bottom: 25px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-frase:hover .foto-perfil img {
     border-color: var(--accent);
-    transform: scale(1.03); /* Se agranda un pelín al pasar el mouse */
+    transform: scale(1.04);
 }
 
-/* --- Contenido de la Texto --- */
+/* --- Bloque de Texto --- */
 .frase {
-    font-size: 1.35rem; /* Frase más imponente */
+    font-size: 1.3rem;
     font-style: italic;
     font-weight: 400;
     color: #f1f5f9;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     line-height: 1.6;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
+    position: relative;
+    z-index: 2;
 }
 
 .autor {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--accent);
-    letter-spacing: 0.5px;
-    text-transform: uppercase; /* Nombre en mayúsculas sutiles */
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
 }
 
 /* --- Footer --- */
 footer {
     text-align: center;
-    margin-top: auto; /* Empuja el footer al fondo si hay pocas tarjetas */
-    padding-top: 60px;
+    margin-top: auto;
+    padding-top: 80px;
     color: #475569;
     font-size: 0.8rem;
+    position: relative;
+    z-index: 10;
 }
