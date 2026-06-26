@@ -1,3 +1,7 @@
+// Credenciales de conexión a tu base de datos de Supabase
+const SUPABASE_URL = "https://pwpyuszdeatoordzkimt.supabase.com";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cHl1c3pkZWF0b29yZHpraW10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NjI4OTEsImV4cCI6MjA5ODAzODg5MX0.BUb5wl_7fzTS14H7QCFYjM6tGqpL8s0iXK_ZQJYcoNU";
+
 const contenedor = document.getElementById('contenedor-frases');
 let todasLasFrases = [];
 let formularioActivo = false;
@@ -14,7 +18,7 @@ const autoresDisponibles = [
     { nombre: "Bettina Cordero", foto: "img/beti.png" },
     { nombre: "Santino Mezzotero", foto: "img/santi.png" },
     { nombre: "Adriel Pérez de Barradas", foto: "img/adri.png" },
-    { nombre: "Natalia Miloslavich", foto: "img/nata.png" },
+    { nombre: "Natasha Miloslavich", foto: "img/nata.png" },
     { nombre: "Rosario Blanco", foto: "img/ro.png" },
     { nombre: "Gabriela Lopez", foto: "img/gaby.png" },
     { nombre: "Lucas Pereiro", foto: "img/lucas.png" }
@@ -54,15 +58,66 @@ estilosAdicionales.innerHTML = `
 `;
 document.head.appendChild(estilosAdicionales);
 
-// Cargar datos desde el JSON
+// 1. OBTENER FRASES (GET de Supabase)
 async function cargarFrases() {
     try {
-        const respuesta = await fetch('frases.json');
-        todasLasFrases = await respuesta.json();
+        const respuesta = await fetch(`${SUPABASE_URL}/rest/v1/frases?select=*`, {
+            method: 'GET',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+        });
+        
+        if (!respuesta.ok) {
+            throw new Error(`HTTP error! status: ${respuesta.status}`);
+        }
+
+        const datos = await respuesta.json();
+        
+        // Verificamos que sea un array válido
+        if (Array.isArray(datos)) {
+            todasLasFrases = datos;
+            todasLasFrases.sort((a, b) => b.id - a.id);
+        }
+        
         renderizarPantalla();
     } catch (error) {
-        console.error("Error al cargar las frases:", error);
-        contenedor.innerHTML = `<p style="color: red; text-align: center;">Error al cargar el libro de frases.</p>`;
+        console.error("Error al conectar con Supabase:", error);
+        if (contenedor) {
+            contenedor.innerHTML = `<p style="color: #ef4444; text-align: center; grid-column: 1/-1; font-weight: 600;">Error al sincronizar con la base de datos en la nube.</p>`;
+        }
+    }
+}
+
+// 2. ENVIAR NUEVA FRASE (POST a Supabase)
+async function guardarFraseEnBD(textoFrase, autorFrase, rutaFoto) {
+    try {
+        const respuesta = await fetch(`${SUPABASE_URL}/rest/v1/frases`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({
+                frase: textoFrase,
+                autor: autorFrase,
+                foto: rutaFoto
+            })
+        });
+
+        if (respuesta.ok) {
+            await cargarFrases();
+        } else {
+            const errData = await respuesta.json().catch(() => ({}));
+            console.error("Detalle del error en Supabase:", errData);
+            alert("No se pudo guardar la frase. Verifica las políticas RLS en tu panel.");
+        }
+    } catch (error) {
+        console.error("Error al insertar:", error);
+        alert("Error de red o bloqueo al guardar la frase.");
     }
 }
 
@@ -91,34 +146,39 @@ function renderizarPantalla(frasesAMostrar = todasLasFrases) {
         `;
         contenedor.appendChild(tarjetaForm);
 
-        // Procesar la subida local
-        tarjetaForm.querySelector('#form-inline').addEventListener('submit', (e) => {
+        // Evento al enviar la frase
+        tarjetaForm.querySelector('#form-inline').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btnInsertar = tarjetaForm.querySelector('.btn-insertar');
+            btnInsertar.innerText = "Guardando...";
+            btnInsertar.disabled = true;
+
             const texto = document.getElementById('ins-frase').value.trim();
             const select = document.getElementById('ins-autor');
             const autor = select.value;
             const foto = select.options[select.selectedIndex].getAttribute('data-foto');
 
-            const nuevoObjeto = { id: todasLasFrases.length + 1, frase: texto, autor: autor, foto: foto };
-            
-            todasLasFrases.push(nuevoObjeto);
             formularioActivo = false;
-            
             const btnToggleForm = document.getElementById('btn-toggle-form');
             if (btnToggleForm) btnToggleForm.classList.remove('activo');
-            
-            renderizarPantalla();
-            console.log("Copia este bloque para tu frases.json:", JSON.stringify(todasLasFrases, null, 4));
+
+            await guardarFraseEnBD(texto, autor, foto);
         });
     }
 
-    // Dibujar las frases normales
+    // Dibujar las frases traídas de la base de datos
+    if (frasesAMostrar.length === 0 && !formularioActivo) {
+        contenedor.innerHTML = `<p style="color: var(--text-muted); text-align: center; grid-column: 1/-1; font-style: italic;">El libro de frases está vacío. ¡Sé el primero en inmortalizar una!</p>`;
+        return;
+    }
+
     frasesAMostrar.forEach(item => {
+        if (!item.frase || !item.autor) return;
         const tarjeta = document.createElement('article');
         tarjeta.classList.add('card-frase');
         tarjeta.innerHTML = `
             <div class="foto-perfil">
-                <img src="${item.foto}" alt="Foto de ${item.autor}">
+                <img src="${item.foto || 'img/default.png'}" alt="Foto de ${item.autor}">
             </div>
             <div class="contenido">
                 <p class="frase">"${item.frase.replace(/"/g, '')}"</p>
@@ -129,7 +189,7 @@ function renderizarPantalla(frasesAMostrar = todasLasFrases) {
     });
 }
 
-// Protección total del DOM para evitar errores null en GitHub Pages
+// Inicialización de escuchadores de eventos
 document.addEventListener('DOMContentLoaded', () => {
     const btnToggleForm = document.getElementById('btn-toggle-form');
     const buscador = document.getElementById('buscador');
@@ -146,7 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
         buscador.addEventListener('input', (e) => {
             const texto = e.target.value.toLowerCase();
             const filtradas = todasLasFrases.filter(item => 
-                item.autor.toLowerCase().includes(texto) || item.frase.toLowerCase().includes(texto)
+                (item.autor && item.autor.toLowerCase().includes(texto)) || 
+                (item.frase && item.frase.toLowerCase().includes(texto))
             );
             renderizarPantalla(filtradas);
         });
