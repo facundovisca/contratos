@@ -70,7 +70,9 @@ async function cargarFrases() {
         
         if (Array.isArray(datos)) {
             todasLasFrases = datos;
-            todasLasFrases.sort((a, b) => b.id - a.id);
+            
+            // --- ¡CAMBIO ACÁ! Mezclamos las tarjetas al azar en cada refrescada ---
+            todasLasFrases.sort(() => Math.random() - 0.5);
         }
         
         renderizarFraseDelDia();
@@ -82,7 +84,6 @@ async function cargarFrases() {
         }
     }
 }
-
 // LÓGICA DE SELECCIÓN RANDOM DIARIA FIJA (Matemática basada en fecha)
 function renderizarFraseDelDia() {
     if (!contenedorFraseDia || todasLasFrases.length === 0) return;
