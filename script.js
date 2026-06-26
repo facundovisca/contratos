@@ -1,8 +1,8 @@
 // Credenciales de conexión a tu base de datos de Supabase
-const SUPABASE_URL = "https://pwpyuszdeatoordzkimt.supabase.com";
+// Credenciales de conexión a tu base de datos de Supabase
+const SUPABASE_URL = "https://pwpyuszdeatoordzkimt.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cHl1c3pkZWF0b29yZHpraW10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NjI4OTEsImV4cCI6MjA5ODAzODg5MX0.BUb5wl_7fzTS14H7QCFYjM6tGqpL8s0iXK_ZQJYcoNU";
-
-const contenedor = document.getElementById('contenedor-frases');
+const contenedor = document.getElementById('coFntenedor-frases');
 let todasLasFrases = [];
 let formularioActivo = false;
 
