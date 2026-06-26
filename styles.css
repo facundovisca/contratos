@@ -28,7 +28,7 @@ body {
     overflow-x: hidden;
 }
 
-/* --- Esferas de Luz Ambientales de Fondo (Activan el efecto de vidrio) --- */
+/* --- Esferas de Luz Ambientales de Fondo --- */
 body::before,
 body::after {
     content: "";
@@ -57,19 +57,17 @@ body::after {
 /* --- Header --- */
 header {
     text-align: center;
-    margin-bottom: 70px;
+    margin-bottom: 20px; /* Margen bajo controlado para darle paso al margen superior de la card */
     position: relative;
     z-index: 10;
 }
 
 header h1 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 2.8rem;
     font-weight: 800;
-    letter-spacing: -1.2px; /* Look compacto y refinado */
+    letter-spacing: -1.2px;
     margin-bottom: 16px;
     line-height: 1.2;
-    
     background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -88,11 +86,91 @@ header h2 {
     font-style: italic;
 }
 
+/* --- ESTILOS DE LA TARJETA DEL DÍA (HORIZONTAL) --- */
+.card-del-dia {
+    max-width: 760px; 
+    margin: 55px auto 65px auto; /* Separación perfecta: 55px arriba (despega del subtítulo), 65px abajo */
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.7) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 20px; 
+    padding: 35px 40px;
+    display: flex; 
+    align-items: center; 
+    gap: 35px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(56, 189, 248, 0.1);
+    backdrop-filter: blur(20px); 
+    -webkit-backdrop-filter: blur(20px);
+    position: relative; 
+    overflow: hidden;
+    z-index: 10;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+/* Efecto de elevación interactiva con neón */
+.card-del-dia:hover {
+    transform: translateY(-5px);
+    border-color: rgba(56, 189, 248, 0.5);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(56, 189, 248, 0.25);
+}
+
+.card-del-dia::before {
+    content: "FRASE DEL DIA"; 
+    position: absolute; 
+    top: 15px; 
+    right: 20px;
+    font-size: 0.7rem; 
+    font-weight: 800; 
+    color: var(--accent);
+    letter-spacing: 1.5px; 
+    background: rgba(56, 189, 248, 0.1);
+    padding: 4px 10px; 
+    border-radius: 50px;
+}
+
+.card-del-dia .foto-horizontal img {
+    width: 110px;  
+    height: 110px; 
+    border-radius: 16px; 
+    object-fit: cover; 
+    border: 2.5px solid var(--accent);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.card-del-dia:hover .foto-horizontal img {
+    transform: scale(1.04);
+    border-color: #ffffff;
+}
+
+.card-del-dia .info-horizontal { 
+    flex: 1; 
+    text-align: left; 
+}
+
+.card-del-dia .frase-dia-texto {
+    font-size: 1.65rem;
+    font-style: italic; 
+    font-weight: 500;
+    color: #ffffff; 
+    line-height: 1.45; 
+    margin-bottom: 12px;
+}
+
+.card-del-dia .autor-dia-texto {
+    font-size: 1rem; 
+    font-weight: 700; 
+    color: var(--accent);
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+}
+
 /* --- Buscador Premium --- */
 .contenedor-busqueda {
-    margin-top: 40px;
+    margin-bottom: 50px; /* Espaciado fijo para separar de la grilla inferior */
     display: flex;
     justify-content: center;
+    position: relative;
+    z-index: 10;
 }
 
 #buscador {
@@ -100,9 +178,9 @@ header h2 {
     max-width: 420px;
     padding: 16px 28px;
     font-size: 0.95rem;
-    background: rgba(30, 41, 59, 0.4); /* Despegado sutilmente del fondo oscuro */
+    background: rgba(30, 41, 59, 0.4);
     border: 1px solid var(--border-color);
-    border-radius: 16px; /* Geometría suavizada alineada con las tarjetas */
+    border-radius: 16px;
     color: var(--text-main);
     outline: none;
     backdrop-filter: blur(10px);
@@ -119,7 +197,7 @@ header h2 {
 }
 
 #buscador::placeholder {
-    color: #64748b; /* Contraste óptimo para lectura rápida */
+    color: #64748b;
 }
 
 /* --- Grid de Tarjetas --- */
@@ -137,11 +215,11 @@ header h2 {
 /* --- Tarjeta Individual --- */
 .card-frase {
     background: var(--card-bg);
-    backdrop-filter: blur(20px); /* Look sedoso y translúcido */
+    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
     border-radius: 20px;
-    padding: 50px 30px 40px 30px; /* Más aire interno para equilibrar textos */
+    padding: 50px 30px 40px 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -152,19 +230,17 @@ header h2 {
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Decoración: Comilla elegante en marca de agua */
 .card-frase::before {
     content: "“";
     position: absolute;
     top: -10px;
     left: 25px;
     font-size: 7.5rem;
-    color: rgba(56, 189, 248, 0.05); /* Vinculada a la paleta de acento */
+    color: rgba(56, 189, 248, 0.05);
     font-family: serif;
     pointer-events: none;
 }
 
-/* Hover Fluido Avanzado */
 .card-frase:hover {
     transform: translateY(-6px);
     border-color: rgba(56, 189, 248, 0.35);
@@ -194,7 +270,7 @@ header h2 {
     font-style: italic;
     font-weight: 400;
     color: #f1f5f9;
-    margin-top: 10px; /* Separación sutil respecto a la foto */
+    margin-top: 10px;
     margin-bottom: 24px;
     line-height: 1.6;
     letter-spacing: -0.2px;
@@ -223,95 +299,14 @@ footer {
     z-index: 10;
 }
 
-/* --- ESTILOS DE LA TARJETA DEL DÍA (HORIZONTAL) --- */
-    .card-del-dia {
-        max-width: 780px; 
-        margin: 40px auto 60px auto; /* <- MÁS ESPACIO: 40px arriba (despega del subtítulo) y 60px abajo (despega del buscador) */
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.7) 100%);
-        border: 1px solid rgba(56, 189, 248, 0.25);
-        border-radius: 20px; 
-        padding: 35px 40px;
-        display: flex; 
-        align-items: center; 
-        gap: 35px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(56, 189, 248, 0.1);
-        backdrop-filter: blur(20px); 
-        -webkit-backdrop-filter: blur(20px);
-        position: relative; 
-        overflow: hidden;
+/* --- Responsive --- */
+@media (max-width: 680px) {
+    .card-del-dia { 
+        flex-direction: column; 
+        text-align: center; 
+        gap: 20px; 
+        padding: 30px; 
+        margin: 30px 15px 40px 15px;
     }
-    .card-del-dia::before {
-        content: "FRASE DEL DIA"; 
-        position: absolute; 
-        top: 15px; 
-        right: 20px;
-        font-size: 0.7rem; 
-        font-weight: 800; 
-        color: var(--accent);
-        letter-spacing: 1.5px; 
-        background: rgba(56, 189, 248, 0.1);
-        padding: 4px 10px; 
-        border-radius: 50px;
-    }
-    .card-del-dia .foto-horizontal img {
-        width: 110px;  /* <- Achicamos un toque la foto para equilibrar el peso visual */
-        height: 110px; 
-        border-radius: 16px; 
-        object-fit: cover; 
-        border: 2.5px solid var(--accent);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
-    .card-del-dia .info-horizontal { 
-        flex: 1; 
-        text-align: left; 
-    }
-    .card-del-dia .frase-dia-texto {
-        font-size: 1.7rem; /* <- Frase un poco más imponente */
-        font-style: italic; 
-        font-weight: 500;
-        color: #ffffff; 
-        line-height: 1.4; 
-        margin-bottom: 12px;
-    }
-    .card-del-dia .autor-dia-texto {
-        font-size: 1rem; 
-        font-weight: 700; 
-        color: var(--accent);
-        text-transform: uppercase; 
-        letter-spacing: 1px;
-    }
-
-    @media (max-width: 680px) {
-        .card-del-dia { 
-            flex-direction: column; 
-            text-align: center; 
-            gap: 20px; 
-            padding: 30px; 
-            margin: 30px 15px 40px 15px;
-        }
-        .card-del-dia .info-horizontal { text-align: center; }
-    }
-
-    /* --- ANIMACIONES EN HOVER PARA LA TARJETA DEL DÍA --- */
-    .card-del-dia {
-        /* (Buscá la clase anterior y asegurate de que tenga esta línea de transición para que sea suave) */
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
-    }
-
-    /* Efecto al pasar el mouse por encima de la tarjeta */
-    .card-del-dia:hover {
-        transform: translateY(-4px); /* Sube sutilmente */
-        border-color: rgba(56, 189, 248, 0.5); /* Se ilumina más el borde */
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(56, 189, 248, 0.25); /* Se expande el neón de fondo */
-    }
-
-    /* Animación extra en la foto cuando hacés hover en la tarjeta */
-    .card-del-dia .foto-horizontal img {
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
-    }
-    
-    .card-del-dia:hover .foto-horizontal img {
-        transform: scale(1.03); /* Micro-zoom premium en la imagen */
-        border-color: #ffffff; /* El borde de la foto pasa de cian a blanco */
-    }
-    
+    .card-del-dia .info-horizontal { text-align: center; }
+}
