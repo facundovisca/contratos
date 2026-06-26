@@ -44,11 +44,14 @@ header h1 {
     -webkit-text-fill-color: transparent; /* Efecto degradado en el título */
 }
 
-header p {
-    font-style: italic;
-    color: #94a3b8;
+header h2 {
     font-size: 1.1rem;
+    color: #64748b; /* Gris sutil de la paleta */
     font-weight: 300;
+    margin-top: 12px;
+    letter-spacing: 0.8px;
+    line-height: 1.4;
+    font-style: italic; /* Le da ese toque de cita o reflexión */
 }
 
 /* --- Buscador --- */
