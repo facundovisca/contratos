@@ -222,3 +222,95 @@ footer {
     position: relative;
     z-index: 10;
 }
+
+/* --- ESTILOS DE LA TARJETA DEL DÍA (HORIZONTAL) --- */
+    .card-del-dia {
+        max-width: 780px; 
+        margin: 40px auto 60px auto; /* <- MÁS ESPACIO: 40px arriba (despega del subtítulo) y 60px abajo (despega del buscador) */
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.7) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 20px; 
+        padding: 35px 40px;
+        display: flex; 
+        align-items: center; 
+        gap: 35px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(56, 189, 248, 0.1);
+        backdrop-filter: blur(20px); 
+        -webkit-backdrop-filter: blur(20px);
+        position: relative; 
+        overflow: hidden;
+    }
+    .card-del-dia::before {
+        content: "FRASE DEL DIA"; 
+        position: absolute; 
+        top: 15px; 
+        right: 20px;
+        font-size: 0.7rem; 
+        font-weight: 800; 
+        color: var(--accent);
+        letter-spacing: 1.5px; 
+        background: rgba(56, 189, 248, 0.1);
+        padding: 4px 10px; 
+        border-radius: 50px;
+    }
+    .card-del-dia .foto-horizontal img {
+        width: 110px;  /* <- Achicamos un toque la foto para equilibrar el peso visual */
+        height: 110px; 
+        border-radius: 16px; 
+        object-fit: cover; 
+        border: 2.5px solid var(--accent);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .card-del-dia .info-horizontal { 
+        flex: 1; 
+        text-align: left; 
+    }
+    .card-del-dia .frase-dia-texto {
+        font-size: 1.7rem; /* <- Frase un poco más imponente */
+        font-style: italic; 
+        font-weight: 500;
+        color: #ffffff; 
+        line-height: 1.4; 
+        margin-bottom: 12px;
+    }
+    .card-del-dia .autor-dia-texto {
+        font-size: 1rem; 
+        font-weight: 700; 
+        color: var(--accent);
+        text-transform: uppercase; 
+        letter-spacing: 1px;
+    }
+
+    @media (max-width: 680px) {
+        .card-del-dia { 
+            flex-direction: column; 
+            text-align: center; 
+            gap: 20px; 
+            padding: 30px; 
+            margin: 30px 15px 40px 15px;
+        }
+        .card-del-dia .info-horizontal { text-align: center; }
+    }
+
+    /* --- ANIMACIONES EN HOVER PARA LA TARJETA DEL DÍA --- */
+    .card-del-dia {
+        /* (Buscá la clase anterior y asegurate de que tenga esta línea de transición para que sea suave) */
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+
+    /* Efecto al pasar el mouse por encima de la tarjeta */
+    .card-del-dia:hover {
+        transform: translateY(-4px); /* Sube sutilmente */
+        border-color: rgba(56, 189, 248, 0.5); /* Se ilumina más el borde */
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(56, 189, 248, 0.25); /* Se expande el neón de fondo */
+    }
+
+    /* Animación extra en la foto cuando hacés hover en la tarjeta */
+    .card-del-dia .foto-horizontal img {
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+    }
+    
+    .card-del-dia:hover .foto-horizontal img {
+        transform: scale(1.03); /* Micro-zoom premium en la imagen */
+        border-color: #ffffff; /* El borde de la foto pasa de cian a blanco */
+    }
