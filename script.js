@@ -1,12 +1,12 @@
 // Credenciales de conexión a tu base de datos de Supabase
-// Credenciales de conexión a tu base de datos de Supabase
 const SUPABASE_URL = "https://pwpyuszdeatoordzkimt.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cHl1c3pkZWF0b29yZHpraW10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NjI4OTEsImV4cCI6MjA5ODAzODg5MX0.BUb5wl_7fzTS14H7QCFYjM6tGqpL8s0iXK_ZQJYcoNU";
-const contenedor = document.getElementById("contenedor-frases");
+
+const contenedor = document.getElementById('contenedor-frases');
+const contenedorFraseDia = document.getElementById('frase-del-dia-container');
 let todasLasFrases = [];
 let formularioActivo = false;
 
-// Lista oficial de autores con nombres completos y fotos correspondientes
 const autoresDisponibles = [
     { nombre: "Sol Belous", foto: "img/sol.png" },
     { nombre: "Daniel Casal", foto: "img/dani.png" },
@@ -18,13 +18,13 @@ const autoresDisponibles = [
     { nombre: "Bettina Cordero", foto: "img/beti.png" },
     { nombre: "Santino Mezzotero", foto: "img/santi.png" },
     { nombre: "Adriel Pérez de Barradas", foto: "img/adri.png" },
-    { nombre: "Natasha Miloslavich", foto: "img/nata.png" },
+    { nombre: "Natasha Miloslavich", foto: "img/nata.png" }, // <- ¡Corregido acá!
     { nombre: "Rosario Blanco", foto: "img/ro.png" },
     { nombre: "Gabriela Lopez", foto: "img/gaby.png" },
     { nombre: "Lucas Pereiro", foto: "img/lucas.png" }
 ];
 
-// Inyección de estilos dinámicos de los componentes interactivos
+// Estilos dinámicos para los nuevos componentes interactivos y la tarjeta horizontal
 const estilosAdicionales = document.createElement('style');
 estilosAdicionales.innerHTML = `
     .btn-flotante-mas {
@@ -33,8 +33,8 @@ estilosAdicionales.innerHTML = `
         background: var(--accent); border: none;
         color: #0f1423; font-size: 2rem; font-weight: bold;
         cursor: pointer; box-shadow: 0 4px 20px var(--accent-glow);
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        z-index: 100; display: flex; align-items: center; justify-content: center;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100;
+        display: flex; align-items: center; justify-content: center;
     }
     .btn-flotante-mas:hover { transform: scale(1.1) rotate(90deg); }
     .btn-flotante-mas.activo { background: #64748b; transform: scale(0.9) rotate(45deg); }
@@ -46,15 +46,50 @@ estilosAdicionales.innerHTML = `
         margin-bottom: 15px; outline: none; transition: border-color 0.3s;
     }
     .input-premium:focus { border-color: var(--accent); }
-    .select-premium { cursor: pointer; }
     
     .btn-insertar {
-        background: var(--accent); color: #0f1423;
-        border: none; padding: 12px 24px; border-radius: 50px;
-        font-weight: 600; cursor: pointer; width: 100%;
-        transition: transform 0.2s;
+        background: var(--accent); color: #0f1423; border: none;
+        padding: 12px 24px; border-radius: 50px; font-weight: 600;
+        cursor: pointer; width: 100%; transition: transform 0.2s;
     }
     .btn-insertar:hover { transform: translateY(-2px); }
+
+    /* --- ESTILOS DE LA TARJETA DEL DÍA (HORIZONTAL) --- */
+    .card-del-dia {
+        max-width: 800px; margin: 0 auto 50px auto;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+        border: 2px solid rgba(56, 189, 248, 0.3);
+        border-radius: 24px; padding: 40px;
+        display: flex; align-items: center; gap: 40px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(56, 189, 248, 0.15);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        position: relative; overflow: hidden;
+    }
+    .card-del-dia::before {
+        content: "FRASE DEL DIA"; position: absolute; top: 15px; right: 20px;
+        font-size: 0.75rem; font-weight: 800; color: var(--accent);
+        letter-spacing: 2px; background: rgba(56, 189, 248, 0.1);
+        padding: 4px 12px; border-radius: 50px;
+    }
+    .card-del-dia .foto-horizontal img {
+        width: 150px; height: 150px; border-radius: 20px;
+        object-fit: cover; border: 3px solid var(--accent);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .card-del-dia .info-horizontal { flex: 1; text-align: left; }
+    .card-del-dia .frase-dia-texto {
+        font-size: 1.6rem; font-style: italic; font-weight: 500;
+        color: #ffffff; line-height: 1.5; margin-bottom: 15px;
+    }
+    .card-del-dia .autor-dia-texto {
+        font-size: 1.1rem; font-weight: 700; color: var(--accent);
+        text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    @media (max-width: 680px) {
+        .card-del-dia { flex-direction: column; text-align: center; gap: 20px; padding: 30px; }
+        .card-del-dia .info-horizontal { text-align: center; }
+    }
 `;
 document.head.appendChild(estilosAdicionales);
 
@@ -63,24 +98,18 @@ async function cargarFrases() {
     try {
         const respuesta = await fetch(`${SUPABASE_URL}/rest/v1/frases?select=*`, {
             method: 'GET',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`
-            }
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
         });
         
-        if (!respuesta.ok) {
-            throw new Error(`HTTP error! status: ${respuesta.status}`);
-        }
-
+        if (!respuesta.ok) throw new Error(`HTTP error! status: ${respuesta.status}`);
         const datos = await respuesta.json();
         
-        // Verificamos que sea un array válido
         if (Array.isArray(datos)) {
             todasLasFrases = datos;
             todasLasFrases.sort((a, b) => b.id - a.id);
         }
         
+        renderizarFraseDelDia();
         renderizarPantalla();
     } catch (error) {
         console.error("Error al conectar con Supabase:", error);
@@ -88,6 +117,29 @@ async function cargarFrases() {
             contenedor.innerHTML = `<p style="color: #ef4444; text-align: center; grid-column: 1/-1; font-weight: 600;">Error al sincronizar con la base de datos en la nube.</p>`;
         }
     }
+}
+
+// LÓGICA DE SELECCIÓN RANDOM DIARIA FIJA
+function renderizarFraseDelDia() {
+    if (!contenedorFraseDia || todasLasFrases.length === 0) return;
+
+    const fecha = new Date();
+    const semillaFecha = fecha.getFullYear() * 10000 + (fecha.getMonth() + 1) * 100 + fecha.getDate();
+    
+    const indiceDelDia = semillaFecha % todasLasFrases.length;
+    const itemHoy = todasLasFrases[indiceDelDia];
+
+    contenedorFraseDia.innerHTML = `
+        <div class="card-del-dia">
+            <div class="foto-horizontal">
+                <img src="${itemHoy.foto || 'img/default.png'}" alt="Foto de ${itemHoy.autor}">
+            </div>
+            <div class="info-horizontal">
+                <p class="frase-dia-texto">"${itemHoy.frase.replace(/"/g, '')}"</p>
+                <h3 class="autor-dia-texto">${itemHoy.autor}</h3>
+            </div>
+        </div>
+    `;
 }
 
 // 2. ENVIAR NUEVA FRASE (POST a Supabase)
@@ -101,36 +153,28 @@ async function guardarFraseEnBD(textoFrase, autorFrase, rutaFoto) {
                 'Content-Type': 'application/json',
                 'Prefer': 'return=representation'
             },
-            body: JSON.stringify({
-                frase: textoFrase,
-                autor: autorFrase,
-                foto: rutaFoto
-            })
+            body: JSON.stringify({ frase: textoFrase, autor: autorFrase, foto: rutaFoto })
         });
 
         if (respuesta.ok) {
             await cargarFrases();
         } else {
-            const errData = await respuesta.json().catch(() => ({}));
-            console.error("Detalle del error en Supabase:", errData);
-            alert("No se pudo guardar la frase. Verifica las políticas RLS en tu panel.");
+            alert("No se pudo guardar la frase. Verifica tus políticas RLS.");
         }
     } catch (error) {
         console.error("Error al insertar:", error);
-        alert("Error de red o bloqueo al guardar la frase.");
+        alert("Error de red al intentar guardar.");
     }
 }
 
-// Pintar la interfaz en la pantalla
+// Pintar la grilla tradicional abajo
 function renderizarPantalla(frasesAMostrar = todasLasFrases) {
     if (!contenedor) return;
     contenedor.innerHTML = "";
 
-    // Insertar la tarjeta formulario si está activa
     if (formularioActivo) {
         const tarjetaForm = document.createElement('article');
         tarjetaForm.classList.add('card-frase');
-        
         let opcionesSelect = autoresDisponibles.map(a => `<option value="${a.nombre}" data-foto="${a.foto}">${a.nombre}</option>`).join('');
 
         tarjetaForm.innerHTML = `
@@ -146,7 +190,6 @@ function renderizarPantalla(frasesAMostrar = todasLasFrases) {
         `;
         contenedor.appendChild(tarjetaForm);
 
-        // Evento al enviar la frase
         tarjetaForm.querySelector('#form-inline').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnInsertar = tarjetaForm.querySelector('.btn-insertar');
@@ -159,16 +202,13 @@ function renderizarPantalla(frasesAMostrar = todasLasFrases) {
             const foto = select.options[select.selectedIndex].getAttribute('data-foto');
 
             formularioActivo = false;
-            const btnToggleForm = document.getElementById('btn-toggle-form');
-            if (btnToggleForm) btnToggleForm.classList.remove('activo');
-
+            document.getElementById('btn-toggle-form').classList.remove('activo');
             await guardarFraseEnBD(texto, autor, foto);
         });
     }
 
-    // Dibujar las frases traídas de la base de datos
     if (frasesAMostrar.length === 0 && !formularioActivo) {
-        contenedor.innerHTML = `<p style="color: var(--text-muted); text-align: center; grid-column: 1/-1; font-style: italic;">El libro de frases está vacío. ¡Sé el primero en inmortalizar una!</p>`;
+        contenedor.innerHTML = `<p style="color: var(--text-muted); text-align: center; grid-column: 1/-1; font-style: italic;">El libro de frases está vacío. ¡Inmortalizá una!</p>`;
         return;
     }
 
@@ -189,7 +229,6 @@ function renderizarPantalla(frasesAMostrar = todasLasFrases) {
     });
 }
 
-// Inicialización de escuchadores de eventos
 document.addEventListener('DOMContentLoaded', () => {
     const btnToggleForm = document.getElementById('btn-toggle-form');
     const buscador = document.getElementById('buscador');
@@ -209,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 (item.autor && item.autor.toLowerCase().includes(texto)) || 
                 (item.frase && item.frase.toLowerCase().includes(texto))
             );
-            renderizarPantalla(filtradas);
+            renderizarPantaria(filtradas);
         });
     }
 
